@@ -29,33 +29,148 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
+            components = new System.ComponentModel.Container();
+            Drives = new Label();
+            driveList = new CheckedListBox();
+            wipe_button = new Button();
+            selectallbutton = new Button();
+            deselectallbutton = new Button();
+            dataGridView1 = new DataGridView();
+            diskstuffBindingSource = new BindingSource(components);
+            Select = new DataGridViewCheckBoxColumn();
+            DriveNum = new DataGridViewTextBoxColumn();
+            Volumes = new DataGridViewTextBoxColumn();
+            DriveLet = new DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)diskstuffBindingSource).BeginInit();
             SuspendLayout();
             // 
-            // button1
+            // Drives
             // 
-            button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button1.Location = new Point(222, 228);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 0;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
+            Drives.AutoSize = true;
+            Drives.Location = new Point(12, 9);
+            Drives.Name = "Drives";
+            Drives.Size = new Size(39, 15);
+            Drives.TabIndex = 2;
+            Drives.Text = "Drives";
+            // 
+            // driveList
+            // 
+            driveList.FormattingEnabled = true;
+            driveList.Items.AddRange(new object[] { "0 | C: | 256GB" });
+            driveList.Location = new Point(12, 27);
+            driveList.Name = "driveList";
+            driveList.Size = new Size(154, 76);
+            driveList.TabIndex = 3;
+            // 
+            // wipe_button
+            // 
+            wipe_button.Location = new Point(404, 385);
+            wipe_button.Name = "wipe_button";
+            wipe_button.Size = new Size(79, 23);
+            wipe_button.TabIndex = 4;
+            wipe_button.Text = "Wipe Drives";
+            wipe_button.UseVisualStyleBackColor = true;
+            wipe_button.Click += button1_Click;
+            // 
+            // selectallbutton
+            // 
+            selectallbutton.Location = new Point(12, 357);
+            selectallbutton.Name = "selectallbutton";
+            selectallbutton.Size = new Size(83, 23);
+            selectallbutton.TabIndex = 5;
+            selectallbutton.Text = "Select All";
+            selectallbutton.UseVisualStyleBackColor = true;
+            selectallbutton.Click += selectallbutton_Click;
+            // 
+            // deselectallbutton
+            // 
+            deselectallbutton.Location = new Point(12, 386);
+            deselectallbutton.Name = "deselectallbutton";
+            deselectallbutton.Size = new Size(83, 23);
+            deselectallbutton.TabIndex = 6;
+            deselectallbutton.Text = "Deselect All";
+            deselectallbutton.UseVisualStyleBackColor = true;
+            deselectallbutton.Click += deselectallbutton_Click;
+            // 
+            // dataGridView1
+            // 
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
+            dataGridView1.AllowUserToResizeRows = false;
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Select, DriveNum, Volumes, DriveLet });
+            dataGridView1.Location = new Point(12, 109);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowHeadersVisible = false;
+            dataGridView1.RowTemplate.Height = 25;
+            dataGridView1.Size = new Size(236, 131);
+            dataGridView1.TabIndex = 7;
+            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
+            // 
+            // diskstuffBindingSource
+            // 
+            diskstuffBindingSource.DataSource = typeof(diskstuff);
+            // 
+            // Select
+            // 
+            Select.HeaderText = "Sel";
+            Select.Name = "Select";
+            Select.Width = 30;
+            // 
+            // DriveNum
+            // 
+            DriveNum.HeaderText = "Drive";
+            DriveNum.Name = "DriveNum";
+            DriveNum.ReadOnly = true;
+            DriveNum.Resizable = DataGridViewTriState.True;
+            DriveNum.SortMode = DataGridViewColumnSortMode.NotSortable;
+            DriveNum.Width = 50;
+            // 
+            // Volumes
+            // 
+            Volumes.HeaderText = "Volumes";
+            Volumes.Name = "Volumes";
+            Volumes.ReadOnly = true;
+            // 
+            // DriveLet
+            // 
+            DriveLet.HeaderText = "Size";
+            DriveLet.Name = "DriveLet";
+            DriveLet.ReadOnly = true;
+            DriveLet.Width = 50;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(309, 263);
-            Controls.Add(button1);
+            ClientSize = new Size(495, 420);
+            Controls.Add(dataGridView1);
+            Controls.Add(deselectallbutton);
+            Controls.Add(selectallbutton);
+            Controls.Add(wipe_button);
+            Controls.Add(driveList);
+            Controls.Add(Drives);
             Name = "Form1";
             Text = "Form1";
             Load += Form1_Load;
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)diskstuffBindingSource).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
-
-        private Button button1;
+        private Label Drives;
+        private CheckedListBox driveList;
+        private Button wipe_button;
+        private Button selectallbutton;
+        private Button deselectallbutton;
+        private DataGridView dataGridView1;
+        private BindingSource diskstuffBindingSource;
+        private DataGridViewCheckBoxColumn Select;
+        private DataGridViewTextBoxColumn DriveNum;
+        private DataGridViewTextBoxColumn Volumes;
+        private DataGridViewTextBoxColumn DriveLet;
     }
 }
