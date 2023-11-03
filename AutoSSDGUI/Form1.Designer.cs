@@ -36,11 +36,11 @@
             selectallbutton = new Button();
             deselectallbutton = new Button();
             dataGridView1 = new DataGridView();
-            diskstuffBindingSource = new BindingSource(components);
             Select = new DataGridViewCheckBoxColumn();
             DriveNum = new DataGridViewTextBoxColumn();
             Volumes = new DataGridViewTextBoxColumn();
             DriveLet = new DataGridViewTextBoxColumn();
+            diskstuffBindingSource = new BindingSource(components);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)diskstuffBindingSource).BeginInit();
             SuspendLayout();
@@ -98,25 +98,25 @@
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.AllowUserToResizeRows = false;
+            dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader;
+            dataGridView1.BorderStyle = BorderStyle.Fixed3D;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Select, DriveNum, Volumes, DriveLet });
             dataGridView1.Location = new Point(12, 109);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersVisible = false;
             dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(236, 131);
+            dataGridView1.ScrollBars = ScrollBars.Vertical;
+            dataGridView1.Size = new Size(215, 169);
             dataGridView1.TabIndex = 7;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
-            // 
-            // diskstuffBindingSource
-            // 
-            diskstuffBindingSource.DataSource = typeof(diskstuff);
             // 
             // Select
             // 
             Select.HeaderText = "Sel";
             Select.Name = "Select";
-            Select.Width = 30;
+            Select.Width = 28;
             // 
             // DriveNum
             // 
@@ -125,20 +125,25 @@
             DriveNum.ReadOnly = true;
             DriveNum.Resizable = DataGridViewTriState.True;
             DriveNum.SortMode = DataGridViewColumnSortMode.NotSortable;
-            DriveNum.Width = 50;
+            DriveNum.Width = 40;
             // 
             // Volumes
             // 
             Volumes.HeaderText = "Volumes";
             Volumes.Name = "Volumes";
             Volumes.ReadOnly = true;
+            Volumes.Width = 77;
             // 
             // DriveLet
             // 
             DriveLet.HeaderText = "Size";
             DriveLet.Name = "DriveLet";
             DriveLet.ReadOnly = true;
-            DriveLet.Width = 50;
+            DriveLet.Width = 52;
+            // 
+            // diskstuffBindingSource
+            // 
+            diskstuffBindingSource.DataSource = typeof(diskstuff);
             // 
             // Form1
             // 

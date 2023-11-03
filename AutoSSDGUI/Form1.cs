@@ -61,10 +61,20 @@ namespace AutoSSDGUI
                 var partitionResults = pipeline.Invoke();
                 foreach (PSObject partition in partitionResults)
                 {
-                    letters.Add(partition.Properties["DriveLetter"].Value.ToString());
                     var buh = partition.Properties["DriveLetter"].Value.ToString();
+                    Debug.WriteLine($"{buh.Length} letters:");
+                    
+                    //  remove any elements that are not strictly letters
+                    if (!Char.IsLetter(buh[0]))
+                    {
+                        continue;
+                    }
+
+
+                    letters.Add(buh);
                 }
-                addthis.letters = letters.Where(x => !string.IsNullOrWhiteSpace(x)).Distinct().ToList();
+
+                addthis.letters = letters;
 
                 outout.Add(addthis);
             }
@@ -98,6 +108,8 @@ namespace AutoSSDGUI
                 {
                     prettyLetters = String.Join(", ", x.letters.ToArray());
                 }
+
+                // add each disk's info to the gridview
                 dataGridView1.Rows.Add(false,
                     x.drivenum,
                     prettyLetters,
@@ -113,13 +125,13 @@ namespace AutoSSDGUI
 
             if (confirmResult == DialogResult.Yes)
             {
-                // If 'Yes', do something here.
+                // If 'Yes', do something deletion here.
 
             }
             else
             {
-                // If 'No', do something here
-                
+                // If 'No', do nothing at all.!!!!
+
             }
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
@@ -130,14 +142,14 @@ namespace AutoSSDGUI
                     if (row.Cells[2].Value.ToString().Contains("C"))
                     {
                         DialogResult cantnukec = MessageBox.Show("You cannot wipe the C drive. Please unselect the C drive and try again.", "C Drive Selected!", MessageBoxButtons.OK);
-                        
+
 
                         Debug.WriteLine("NOOOO DONT NUKE C DRIVE!!!");
                         return;
                     }
                     Debug.WriteLine(row.Cells[1].Value.ToString());
 
-                   
+
 
                 }
             }
