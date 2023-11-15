@@ -31,7 +31,6 @@
         {
             components = new System.ComponentModel.Container();
             Drives = new Label();
-            driveList = new CheckedListBox();
             wipe_button = new Button();
             selectallbutton = new Button();
             deselectallbutton = new Button();
@@ -54,15 +53,6 @@
             Drives.TabIndex = 2;
             Drives.Text = "Drives";
             // 
-            // driveList
-            // 
-            driveList.FormattingEnabled = true;
-            driveList.Items.AddRange(new object[] { "0 | C: | 256GB" });
-            driveList.Location = new Point(12, 27);
-            driveList.Name = "driveList";
-            driveList.Size = new Size(154, 76);
-            driveList.TabIndex = 3;
-            // 
             // wipe_button
             // 
             wipe_button.Location = new Point(404, 385);
@@ -71,7 +61,7 @@
             wipe_button.TabIndex = 4;
             wipe_button.Text = "Wipe Drives";
             wipe_button.UseVisualStyleBackColor = true;
-            wipe_button.Click += button1_Click;
+            wipe_button.Click += WipeDrive_Click;
             // 
             // selectallbutton
             // 
@@ -103,14 +93,13 @@
             dataGridView1.BorderStyle = BorderStyle.Fixed3D;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Select, DriveNum, Volumes, DriveLet });
-            dataGridView1.Location = new Point(12, 109);
+            dataGridView1.Location = new Point(12, 27);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersVisible = false;
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.ScrollBars = ScrollBars.Vertical;
-            dataGridView1.Size = new Size(215, 169);
+            dataGridView1.Size = new Size(201, 324);
             dataGridView1.TabIndex = 7;
-            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             // 
             // Select
             // 
@@ -154,7 +143,6 @@
             Controls.Add(deselectallbutton);
             Controls.Add(selectallbutton);
             Controls.Add(wipe_button);
-            Controls.Add(driveList);
             Controls.Add(Drives);
             Name = "Form1";
             Text = "Form1";
@@ -167,7 +155,6 @@
 
         #endregion
         private Label Drives;
-        private CheckedListBox driveList;
         private Button wipe_button;
         private Button selectallbutton;
         private Button deselectallbutton;
