@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Management;
 using System.Management.Automation;
@@ -54,6 +55,8 @@ namespace AutoSSDGUI
                 addthis.sn = (string)disk.Properties["SerialNumber"].Value;
                 addthis.sel = false;
                 addthis.newletter = "";
+                addthis.encpercent = -1;
+                addthis.encrypting = false;
 
                 List<string> letters = new List<string>();
                 pipeline = runspace.CreatePipeline();
@@ -100,7 +103,9 @@ namespace AutoSSDGUI
         // (if it was the disk number, you'd need to loop to check which index matches the disk number)
         private void EnableBitLocker(int index)
         {
-
+            pipeline = runspace.CreatePipeline();
+            pipeline.Commands.AddScript($"Enable-BitLocker -MountPoint {diskinfo[index].newletter} -EncryptionMethod Aes256 -PasswordProtector -Password $(ConvertTo-SecureString -String \"{CreatePassword(16)}\" -AsPlainText -Force)");
+            var partitionResults = pipeline.Invoke();
         }
 
         //TODO
@@ -127,6 +132,26 @@ namespace AutoSSDGUI
             string output = p.StandardOutput.ReadToEnd();                 // Places the output to a variable
             p.WaitForExit();                                              // Waits for the exe to finish
 
+            // TODO
+            // update the diskinfo.newletter property for this drive
+
+            pipeline = runspace.CreatePipeline();
+            pipeline.Commands.AddScript($"Get-Partition {diskinfo[index].drivenum}");
+            var partitionResults = pipeline.Invoke();
+
+            foreach (PSObject partition in partitionResults)
+            {
+                var buh = partition.Properties["DriveLetter"].Value.ToString();
+
+                //  skip any elements that are not strictly letters
+                if (!Char.IsLetter(buh[0]))
+                {
+                    continue;
+                }
+
+                diskinfo[index].newletter = buh;
+            }
+            Debug.WriteLine($"disk {diskinfo[index].drivenum} has new letter {diskinfo[index].newletter}");
             return output;
         }
 
@@ -188,19 +213,83 @@ namespace AutoSSDGUI
                 }
             }
 
-            if (confirmResult == DialogResult.Yes)
-            {
-                // If 'Yes', run the diskpart script on all selected disks
-                for (int i = 0; i < diskinfo.Count; i++)
-                {
-                    if (diskinfo[i].sel)
-                    {
-                        Debug.WriteLine($"diskparting {diskinfo[i].drivenum}");
-                        Debug.WriteLine(diskpartScripter(i));
+            if (confirmResult != DialogResult.Yes) return;
 
-                    }
+
+
+            // If 'Yes', run the diskpart script on all selected disks
+            for (int i = 0; i < diskinfo.Count; i++)
+            {
+                if (diskinfo[i].sel)
+                {
+                    Debug.WriteLine($"diskparting {diskinfo[i].drivenum}");
+                    diskpartScripter(i);
                 }
             }
+
+            // and enable bitlocker on all selected disks
+            for (int i = 0; i < diskinfo.Count; i++)
+            {
+                if (diskinfo[i].sel)
+                {
+                    Debug.WriteLine($"encrypting {diskinfo[i].drivenum}");
+                    EnableBitLocker(i);
+                    diskinfo[i].encrypting = true;
+                    Debug.WriteLine("lalallaa");
+                }
+            }
+
+            // get number of selected drives
+            var drivesRemaining = 0;
+            for (int i = 0; i < diskinfo.Count; i++)
+            {
+                if (diskinfo[i].sel)
+                {
+                    drivesRemaining++;
+                }
+            }
+
+            // loop through selected drives and print out the bitlocker percentages until they're all done
+            while (drivesRemaining > 0)
+            {
+                for (int i = 0; i < diskinfo.Count; i++)
+                {
+                    // skip if not selected
+                    if (diskinfo[i].sel != true) continue;
+                    
+                    // grab bitlocker volume info to get encryption percentage
+                    pipeline = runspace.CreatePipeline();
+                    pipeline.Commands.AddScript($"Get-BitLockerVolume -MountPoint {diskinfo[i].newletter} -ErrorAction SilentlyContinue");
+                    var partitionResults = pipeline.Invoke();
+
+                    // go thru each partition on the disk and check if it's done encrypting yet
+                    foreach (PSObject partition in partitionResults)
+                    {
+                        var encPercent = getEncryptionPercentage(partition);
+                        diskinfo[i].encpercent = encPercent;
+                        if (encPercent == 100)
+                        {
+                            drivesRemaining--;
+                            diskinfo[i].sel = false;
+                            diskinfo[i].encrypting = false;
+                            dataGridView1.Invalidate();
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"disk {diskinfo[i].drivenum} is {encPercent}% encrypted");
+                        }
+                    }
+                    
+                }
+            }   
+        }
+
+        // to be used in conjunction with "Get-BitLockerVolume -MountPoint {diskinfo[i].newletter} -ErrorAction SilentlyContinue"
+        // returns the encryption percentage of the disk
+        private int getEncryptionPercentage(PSObject partition)
+        {
+            var buh = partition.Properties["EncryptionPercentage"].Value.ToString();
+            return Int32.Parse(buh);
         }
 
         // check all boxes
@@ -265,5 +354,8 @@ namespace AutoSSDGUI
         public string sn { get; set; }
 
         public Boolean sel { get; set; }
+
+        public Boolean encrypting { get; set; }
+        public int encpercent { get; set; }
     }
 }
