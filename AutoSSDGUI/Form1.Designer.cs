@@ -40,8 +40,15 @@
             Volumes = new DataGridViewTextBoxColumn();
             DriveLet = new DataGridViewTextBoxColumn();
             diskstuffBindingSource = new BindingSource(components);
+            dataGridView2 = new DataGridView();
+            DriveStatus = new Label();
+            dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn3 = new DataGridViewTextBoxColumn();
+            EncryptionPercentage = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)diskstuffBindingSource).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
             SuspendLayout();
             // 
             // Drives
@@ -55,7 +62,7 @@
             // 
             // wipe_button
             // 
-            wipe_button.Location = new Point(404, 385);
+            wipe_button.Location = new Point(374, 385);
             wipe_button.Name = "wipe_button";
             wipe_button.Size = new Size(79, 23);
             wipe_button.TabIndex = 4;
@@ -88,7 +95,6 @@
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.AllowUserToResizeRows = false;
-            dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader;
             dataGridView1.BorderStyle = BorderStyle.Fixed3D;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -98,7 +104,7 @@
             dataGridView1.RowHeadersVisible = false;
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.ScrollBars = ScrollBars.Vertical;
-            dataGridView1.Size = new Size(201, 324);
+            dataGridView1.Size = new Size(199, 324);
             dataGridView1.TabIndex = 7;
             // 
             // Select
@@ -134,11 +140,74 @@
             // 
             diskstuffBindingSource.DataSource = typeof(diskstuff);
             // 
+            // dataGridView2
+            // 
+            dataGridView2.AllowUserToAddRows = false;
+            dataGridView2.AllowUserToDeleteRows = false;
+            dataGridView2.AllowUserToOrderColumns = true;
+            dataGridView2.AllowUserToResizeRows = false;
+            dataGridView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader;
+            dataGridView2.BorderStyle = BorderStyle.Fixed3D;
+            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dataGridView2.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, EncryptionPercentage });
+            dataGridView2.Location = new Point(258, 27);
+            dataGridView2.Name = "dataGridView2";
+            dataGridView2.ReadOnly = true;
+            dataGridView2.RowHeadersVisible = false;
+            dataGridView2.RowTemplate.Height = 25;
+            dataGridView2.ScrollBars = ScrollBars.Vertical;
+            dataGridView2.Size = new Size(195, 324);
+            dataGridView2.TabIndex = 8;
+            // 
+            // DriveStatus
+            // 
+            DriveStatus.AutoSize = true;
+            DriveStatus.Location = new Point(250, 9);
+            DriveStatus.Name = "DriveStatus";
+            DriveStatus.Size = new Size(39, 15);
+            DriveStatus.TabIndex = 9;
+            DriveStatus.Text = "Status";
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            dataGridViewTextBoxColumn1.HeaderText = "Drive";
+            dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            dataGridViewTextBoxColumn1.ReadOnly = true;
+            dataGridViewTextBoxColumn1.Resizable = DataGridViewTriState.True;
+            dataGridViewTextBoxColumn1.SortMode = DataGridViewColumnSortMode.NotSortable;
+            dataGridViewTextBoxColumn1.Width = 40;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            dataGridViewTextBoxColumn2.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn2.HeaderText = "Letter";
+            dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            dataGridViewTextBoxColumn2.ReadOnly = true;
+            dataGridViewTextBoxColumn2.Width = 40;
+            // 
+            // dataGridViewTextBoxColumn3
+            // 
+            dataGridViewTextBoxColumn3.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            dataGridViewTextBoxColumn3.HeaderText = "Status";
+            dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            dataGridViewTextBoxColumn3.ReadOnly = true;
+            dataGridViewTextBoxColumn3.Width = 64;
+            // 
+            // EncryptionPercentage
+            // 
+            EncryptionPercentage.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            EncryptionPercentage.HeaderText = "Enc %";
+            EncryptionPercentage.Name = "EncryptionPercentage";
+            EncryptionPercentage.ReadOnly = true;
+            EncryptionPercentage.Width = 50;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(495, 420);
+            ClientSize = new Size(465, 420);
+            Controls.Add(DriveStatus);
+            Controls.Add(dataGridView2);
             Controls.Add(dataGridView1);
             Controls.Add(deselectallbutton);
             Controls.Add(selectallbutton);
@@ -149,6 +218,7 @@
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ((System.ComponentModel.ISupportInitialize)diskstuffBindingSource).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -164,5 +234,11 @@
         private DataGridViewTextBoxColumn DriveNum;
         private DataGridViewTextBoxColumn Volumes;
         private DataGridViewTextBoxColumn DriveLet;
+        private DataGridView dataGridView2;
+        private Label DriveStatus;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+        private DataGridViewTextBoxColumn EncryptionPercentage;
     }
 }

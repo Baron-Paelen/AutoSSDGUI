@@ -18,6 +18,21 @@ namespace AutoSSDGUI
         private List<PropertyDataCollection> result;
         List<diskstuff> diskinfo;
 
+        private System.Collections.ObjectModel.Collection<PSObject>? RunPSCommand(string cmd)
+        {
+            runspace = RunspaceFactory.CreateRunspace();
+            runspace.Open();
+
+            pipeline = runspace.CreatePipeline();
+            pipeline.Commands.AddScript(cmd);
+
+            var results = pipeline.Invoke();
+
+            runspace.Close();
+
+            return results;
+        }
+
 
         public System.Windows.Forms.ListBox.ObjectCollection Items { get; }
 
@@ -30,19 +45,8 @@ namespace AutoSSDGUI
         // get disk info of all drivse on this pc
         private List<diskstuff> GetDiskInfo()
         {
-            runspace = RunspaceFactory.CreateRunspace();
-            runspace.Open();
 
-            pipeline = runspace.CreatePipeline();
-
-            //pipeline.Commands.AddScript("Get-Disk (Get-Partition -DriveLetter 'D').DiskNumber");
-            pipeline.Commands.AddScript("Get-Disk");
-
-            // https://learn.microsoft.com/en-us/answers/questions/1131852/get-lun-number-and-disk-letter-using-powershell
-            // https://learn.microsoft.com/en-us/answers/questions/1131852/get-lun-number-and-disk-letter-using-powershell
-            // https://learn.microsoft.com/en-us/answers/questions/1131852/get-lun-number-and-disk-letter-using-powershell
-
-            var diskResults = pipeline.Invoke();
+            var diskResults = RunPSCommand("Get-Disk");
 
 
             List<diskstuff> outout = new List<diskstuff>();
@@ -59,9 +63,8 @@ namespace AutoSSDGUI
                 addthis.encrypting = false;
 
                 List<string> letters = new List<string>();
-                pipeline = runspace.CreatePipeline();
-                pipeline.Commands.AddScript($"Get-Partition {addthis.drivenum}");
-                var partitionResults = pipeline.Invoke();
+
+                var partitionResults = RunPSCommand($"Get-Partition {addthis.drivenum}");
                 foreach (PSObject partition in partitionResults)
                 {
                     var buh = partition.Properties["DriveLetter"].Value.ToString();
@@ -103,9 +106,7 @@ namespace AutoSSDGUI
         // (if it was the disk number, you'd need to loop to check which index matches the disk number)
         private void EnableBitLocker(int index)
         {
-            pipeline = runspace.CreatePipeline();
-            pipeline.Commands.AddScript($"Enable-BitLocker -MountPoint {diskinfo[index].newletter} -EncryptionMethod Aes256 -PasswordProtector -Password $(ConvertTo-SecureString -String \"{CreatePassword(16)}\" -AsPlainText -Force)");
-            var partitionResults = pipeline.Invoke();
+            var partitionResults = RunPSCommand($"Enable-BitLocker -MountPoint {diskinfo[index].newletter} -EncryptionMethod Aes256 -PasswordProtector -Password $(ConvertTo-SecureString -String \"{CreatePassword(16)}\" -AsPlainText -Force)");
         }
 
         //TODO
@@ -135,9 +136,7 @@ namespace AutoSSDGUI
             // TODO
             // update the diskinfo.newletter property for this drive
 
-            pipeline = runspace.CreatePipeline();
-            pipeline.Commands.AddScript($"Get-Partition {diskinfo[index].drivenum}");
-            var partitionResults = pipeline.Invoke();
+            var partitionResults = RunPSCommand($"Get-Partition {diskinfo[index].drivenum}");
 
             foreach (PSObject partition in partitionResults)
             {
@@ -162,6 +161,9 @@ namespace AutoSSDGUI
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //MessageBox.Show("MAKE SURE TO NOT SELECT CURRENTLY ENCRYPTING DRIVES!");
+
+
             // https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/disable-buttons-in-a-button-column-in-the-datagrid?view=netframeworkdesktop-4.8
             dataGridView1.CellValueChanged += new DataGridViewCellEventHandler(dataGridView1_CellValueChanged);
             dataGridView1.CurrentCellDirtyStateChanged += new EventHandler(dataGridView1_CurrentCellDirtyStateChanged);
@@ -256,11 +258,9 @@ namespace AutoSSDGUI
                 {
                     // skip if not selected
                     if (diskinfo[i].sel != true) continue;
-                    
+
                     // grab bitlocker volume info to get encryption percentage
-                    pipeline = runspace.CreatePipeline();
-                    pipeline.Commands.AddScript($"Get-BitLockerVolume -MountPoint {diskinfo[i].newletter} -ErrorAction SilentlyContinue");
-                    var partitionResults = pipeline.Invoke();
+                    var partitionResults = RunPSCommand($"Get-BitLockerVolume -MountPoint {diskinfo[i].newletter} -ErrorAction SilentlyContinue");
 
                     // go thru each partition on the disk and check if it's done encrypting yet
                     foreach (PSObject partition in partitionResults)
@@ -279,9 +279,8 @@ namespace AutoSSDGUI
                             Debug.WriteLine($"disk {diskinfo[i].drivenum} is {encPercent}% encrypted");
                         }
                     }
-                    
                 }
-            }   
+            }
         }
 
         // to be used in conjunction with "Get-BitLockerVolume -MountPoint {diskinfo[i].newletter} -ErrorAction SilentlyContinue"
@@ -343,6 +342,7 @@ namespace AutoSSDGUI
                 dataGridView1.CommitEdit(DataGridViewDataErrorContexts.Commit);
             }
         }
+
     }
 
     public class diskstuff
