@@ -49,8 +49,8 @@ namespace AutoSSDGUI
             var diskResults = RunPSCommand("Get-Disk");
 
 
+            // set original disk info except for encryption stuff
             List<diskstuff> outout = new List<diskstuff>();
-
             foreach (PSObject disk in diskResults)
             {
                 diskstuff addthis = new diskstuff();
@@ -83,7 +83,6 @@ namespace AutoSSDGUI
 
                 outout.Add(addthis);
             }
-
 
             return outout;
         }
@@ -263,10 +262,22 @@ namespace AutoSSDGUI
                     var partitionResults = RunPSCommand($"Get-BitLockerVolume -MountPoint {diskinfo[i].newletter} -ErrorAction SilentlyContinue");
 
                     // go thru each partition on the disk and check if it's done encrypting yet
+                    // just one element, looks scary lol
                     foreach (PSObject partition in partitionResults)
                     {
                         var encPercent = getEncryptionPercentage(partition);
                         diskinfo[i].encpercent = encPercent;
+
+                        // update the gridview
+                        for (int j = 0; j < dataGridView2.RowCount; j++)
+                        {
+                            if (dataGridView2.Rows[j].Cells[1].Value.ToString() == diskinfo[i].drivenum.ToString())
+                            {
+                                dataGridView2.Rows[j].Cells[3].Value = encPercent + "%";
+                            }
+                        }
+
+                        // if the disk is 100% encrypted, remove it from the list of drives to check
                         if (encPercent == 100)
                         {
                             drivesRemaining--;
