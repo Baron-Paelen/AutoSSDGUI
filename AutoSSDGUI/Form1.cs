@@ -21,6 +21,7 @@ namespace AutoSSDGUI
         private System.Collections.ObjectModel.Collection<PSObject>? RunPSCommand(string cmd)
         {
             runspace = RunspaceFactory.CreateRunspace();
+            runspace.InitialSessionState.ExecutionPolicy = Microsoft.PowerShell.ExecutionPolicy.Unrestricted;
             runspace.Open();
 
             pipeline = runspace.CreatePipeline();
