@@ -293,6 +293,16 @@ namespace AutoSSDGUI
                     }
                 }
             }
+
+            // Run the diskpart script on each disk again to complete the process
+            for (int i = 0; i < diskinfo.Count; i++)
+            {
+                if (diskinfo[i].sel)
+                {
+                    Debug.WriteLine($"diskparting {diskinfo[i].drivenum}");
+                    diskpartScripter(i);
+                }
+            }
         }
 
         // to be used in conjunction with "Get-BitLockerVolume -MountPoint {diskinfo[i].newletter} -ErrorAction SilentlyContinue"
